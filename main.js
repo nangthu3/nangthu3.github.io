@@ -3,7 +3,7 @@ const socket = io('https://mychat14022018.herokuapp.com/');
 $('#div_chat').hide();
 
 function openStream(){
-	const config = {audio: false, video: true};
+	const config = {audio: true, video: true};
 	return navigator.mediaDevices.getUserMedia(config);
 }
 
