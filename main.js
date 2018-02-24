@@ -2,6 +2,21 @@ const socket = io('https://mychat14022018.herokuapp.com/');
 
 $('#div_chat').hide();
 
+let ice;
+
+$.ajax ({
+	url: "https://global.xirsys.net/_turn/nangthu3.github.io/",
+	type: "PUT",
+	async: false,
+	headers: {
+	  "Authorization": "Basic " + btoa("nangthu3:d956e1d8-1971-11e8-a283-4cf4a4f147a9")
+	},
+	success: function (res){
+		ice = res.v.iceServers;
+	  	console.log("ICE List: "+res.v.iceServers);
+	}
+});
+
 function openStream(){
 	const config = {audio: true, video: true};
 	return navigator.mediaDevices.getUserMedia(config);
@@ -16,7 +31,13 @@ function playVideo(stream, videoTag){
 // openStream()
 // .then(stream => playVideo(stream, "localStream"));
 
-const peer = new Peer({key: 'peerjs', host: 'mypeerserver24022018.herokuapp.com', secure: true, port: 443});
+const peer = new Peer({
+	key: 'peerjs', 
+	host: 'mypeerserver24022018.herokuapp.com', 
+	secure: true, 
+	port: 443,
+	config: ice
+});
 peer.on('open', id => {
 	$('#your_id').append(id);
 	$('#btnSignUp').click(()=>{
