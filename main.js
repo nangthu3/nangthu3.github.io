@@ -16,7 +16,7 @@ function playVideo(stream, videoTag){
 // openStream()
 // .then(stream => playVideo(stream, "localStream"));
 
-const peer = new Peer({key: '7pa32uuzr64oyldi'});
+const peer = new Peer({key: 'peerjs', host: 'https://mypeerserver24022018.herokuapp.com/'});
 peer.on('open', id => {
 	$('#your_id').append(id);
 	$('#btnSignUp').click(()=>{
