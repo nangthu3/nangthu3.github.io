@@ -21,7 +21,7 @@ pc.onaddstream = (event => friendsVideo.srcObject = event.stream);
 
 function sendMessage(senderId, data) {
     var msg = database.push({ sender: senderId, message: data });
-    msg.remove();
+//     msg.remove();
 }
 
 function readMessage(data) {
