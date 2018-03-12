@@ -1,44 +1,161 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Chat WebRTC</title>
-        <script src="jquery-3.3.1.min.js"></script>
-        <script src="peer.min.js"></script>
-        <script src="socket.io.js"></script>
-    </head>
-    <body>
-        <div id="div_chat">
-            <p>Online User</p>
-            <ul id="ulUser"></ul>
-            <h3 id="your_id">YourId: </h3>
-            <video id="localStream" width="300" controls></video>
-            <br /><br />
-            <video id="remoteStream" width="300" controls></video>
-            <br /><br />
-            <input type="text" id="remote_id" placeholder="enter partner Id"/>
-            <button id="btnCall">Call</button>
-        </div>
-        
-        <div id="div_dangky">
-            <br /><br />
-            <input type="text" id="txtUsername" placeholder="enter your name"/>
-            <button id="btnSignUp">Sign Up</button>
-        </div>
-       
-    </body>
-    <script src="main.js"></script>
-</html> -->
-<html>
-  <head>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-  </head>
-  <body onload="showMyFace()">
-    <video id="yourVideo" autoplay muted playsinline></video>
-    <video id="friendsVideo" autoplay playsinline></video>
-    <br />
-    <button onclick="showFriendsFace()" type="button" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Call</button>
-    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
-    <script src="js/script.js"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="screen"/>
+    <script src="script/jquery.js"></script>
+
+</head>
+<body>
+    <ul class="firebaseui-idp-list">
+        <li class="firebaseui-list-item">
+            <button id="btn_login_google"
+            class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" data-upgraded=",MaterialButton">
+                <span class="firebaseui-idp-icon-wrapper">
+                    <img class="firebaseui-idp-icon" alt="" src="img/google.svg">
+                </span>
+                <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span>
+            </button>
+        </li>
+        <li class="firebaseui-list-item">
+            <button id="btn_login_facebook"
+            class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-facebook firebaseui-id-idp-button" data-provider-id="facebook.com" data-upgraded=",MaterialButton">
+                <span class="firebaseui-idp-icon-wrapper">
+                    <img class="firebaseui-idp-icon" alt="" src="img/facebook.svg"></span>
+                    <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Facebook</span>
+                    <span class="firebaseui-idp-text firebaseui-idp-text-short">Facebook</span>
+                </button>
+        </li>
+    </ul>
+
+    <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
+
+    <script>
+    
+var config = {
+  apiKey: "AIzaSyCdexlg5hZV5yU5u1aQEbl4MJS3pKuXIkw",
+  authDomain: "xetor-6ea5a.firebaseapp.com",
+  databaseURL: "https://xetor-6ea5a.firebaseio.com",
+  projectId: "xetor-6ea5a",
+  storageBucket: "xetor-6ea5a.appspot.com",
+  messagingSenderId: "573201768150"
+};
+firebase.initializeApp(config);
+
+//   firebase.auth().onAuthStateChanged(function(user) {
+//     if (user) {
+//       // User is signed in.
+//     } else {
+//       // No user is signed in.
+//     }
+//   });
+
+var user = firebase.auth().currentUser;
+var name, email, photoUrl, uid, emailVerified;
+var provider;
+
+if (user) {
+  // User is signed in.
+} else {
+  // No user is signed in.
+}
+if (user != null) {
+  name = user.displayName;
+  email = user.email;
+  photoUrl = user.photoURL;
+  emailVerified = user.emailVerified;
+  uid = user.uid;  
+// The user's ID, unique to the Firebase project. Do NOT use
+// this value to authenticate with your backend server, if
+// you have one. Use User.getToken() instead.
+
+  user.providerData.forEach(function (profile) {
+    console.log("Sign-in provider: " + profile.providerId);
+    console.log("  Provider-specific UID: " + profile.uid);
+    console.log("  Name: " + profile.displayName);
+    console.log("  Email: " + profile.email);
+    console.log("  Photo URL: " + profile.photoURL);
+  });
+}
+
+function logInWithGoogle(){
+  console.log("logInWithGoogle");
+  provider = new firebase.auth.GoogleAuthProvider();
+  // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+  signInWithPopUp();
+}
+
+function logInWithFacebook(){
+  console.log("logInWithFacebook");
+  provider = new firebase.auth.FacebookAuthProvider();
+  // provider.addScope('user_birthday');
+  signInWithPopUp();
+}
+
+function signInWithRedirect(){
+  firebase.auth().signInWithRedirect(provider);
+  firebase.auth().getRedirectResult().then(function(result) {
+      if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // ...
+      }
+      // The signed-in user info.
+      user = result.user;
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+}
+
+function signInWithPopUp(){
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+      token = result.credential.accessToken;
+      // The signed-in user info.
+      user = result.user;
+      // ...
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+      console.log(errorCode+"=="+errorMessage+"=="+email+"=="+credential);
+    });
+}
+
+function signOut(){
+  firebase.auth().signOut().then(function() {
+      // Sign-out successful.
+    }).catch(function(error) {
+      // An error happened.
+    });      
+}
+
+
+$("#btn_login_google").click(function(){
+  logInWithGoogle();
+});
+
+$("#btn_login_facebook").click(function(){
+  logInWithFacebook();
+});
+    </script>
+</body>
 </html>
